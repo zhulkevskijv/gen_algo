@@ -70,6 +70,7 @@ class RunsStats:
         self.noise_NI_min = None
         self.noise_NI_max = None
         self.noise_NI_avg = None
+        self.noise_Sigma_NI = None
 
     def calculate(self):
         successful_runs = [run for run in self.runs if run.is_successful]
@@ -81,8 +82,25 @@ class RunsStats:
         self.calculate_teta_stats(successful_runs)
         self.calculate_s_stats(successful_runs)
 
+    def calculate_const(self):
+        successful_runs = [run for run in self.runs if run.is_successful]
+        self.noise_suc = len(successful_runs) / len(self.runs)
+        self.success_percentage = (len(successful_runs) / len(self.runs)) * 100
+        suc_noise_stats = [run.noise_stats for run in successful_runs]
+        self.calculate_rr_stats(successful_runs)
+        self.calculate_teta_stats(successful_runs)
+        nis = [ns.NI for ns in suc_noise_stats if ns.NI is not None]
+        if len(nis) > 0:
+            self.noise_NI_min = min(nis)
+            self.noise_NI_max = max(nis)
+            self.noise_NI_avg = mean(nis)
+            if (len(suc_noise_stats) == 1):
+                self.noise_Sigma_NI = 0
+            else:
+                self.noise_Sigma_NI = sigma(nis)
+
     def calculate_noise_stats(self):
-        suc_noise_stats = [run.noise_stats for run in self.runs if run.noise_stats.conv_to is not None]
+        suc_noise_stats = [run.noise_stats for run in self.runs]
         self.noise_suc = len(suc_noise_stats) / len(self.runs)
         # if self.noise_suc != 0 and len(suc_noise_stats) > 0:
             # self.noise_num0 = len([ns for ns in suc_noise_stats if ns.conv_to == 0]) / len(suc_noise_stats)
@@ -92,6 +110,8 @@ class RunsStats:
             self.noise_NI_min = min(nis)
             self.noise_NI_max = max(nis)
             self.noise_NI_avg = mean(nis)
+
+
 
     def calculate_convergence_stats(self, successful_runs):
         convergence_iterations = [run.pressure_stats.NI for run in successful_runs]
@@ -103,7 +123,6 @@ class RunsStats:
 
     def calculate_i_stats(self, successful_runs):
         i_min_list = [run.pressure_stats.i_min for run in successful_runs]
-        print(i_min_list)
         if len(i_min_list) > 0:
             self.min_I_min = min(i_min_list)
             self.sigma_I_min = sigma(i_min_list)
@@ -204,7 +223,32 @@ class RunsStats:
         if len(ni_s_max_list) > 0:
             self.NI_s_max = max(ni_s_max_list)
 
-    def as_dict(self):
+    def as_dict(self, ff_name):
+        if 'FConstALL' in ff_name:
+            res_dict = self.as_noise_dict()
+            res_dict.update({
+                'NI_RR_min': [self.NI_rr_min],
+                'Min_RR_min': [self.min_rr_min],
+                'NI_RR_max': [self.NI_rr_max],
+                'Max_RR_max': [self.max_rr_max],
+                'Avg_RR_min': [self.avg_rr_min],
+                'Avg_RR_max': [self.avg_rr_max],
+                'Avg_RR_avg': [self.avg_rr_avg],
+                'NI_Teta_min': [self.NI_teta_min],
+                'Min_Teta_min': [self.min_teta_min],
+                'NI_Teta_max': [self.NI_teta_max],
+                'Max_Teta_max': [self.max_teta_max],
+                'Avg_Teta_min': [self.avg_teta_min],
+                'Avg_Teta_max': [self.avg_teta_max],
+                'Avg_Teta_avg': [self.avg_teta_avg],
+                'Sigma_RR_min': [self.sigma_rr_min],
+                'Sigma_RR_max': [self.sigma_rr_max],
+                'Sigma_RR_avg': [self.sigma_rr_avg],
+                'Sigma_Teta_min': [self.sigma_teta_min],
+                'Sigma_Teta_max': [self.sigma_teta_max],
+                'Sigma_Teta_avg': [self.sigma_teta_avg]
+            })
+            return res_dict
         return {
             'Avg_NI': [self.avg_NI],
             'Avg_I_min': [self.avg_I_min],
@@ -270,10 +314,14 @@ class RunsStats:
             # 'Moise 1': [self.noise_num1],
             'Noise NI min': [self.noise_NI_min],
             'Noise NI max': [self.noise_NI_max],
-            'Noise NI avg': [self.noise_NI_avg]
+            'Noise NI avg': [self.noise_NI_avg],
+            'Noise NI Sigma': [self.noise_Sigma_NI]
         }
 
     def __str__(self):
         return ("Suc: " + str(self.success_percentage) + "%" +
                 "\nMin: " + str(self.min_NI) + "\nMax: " + str(self.max_NI) + "\nAvg: " + str(self.avg_NI))
+
+    def toJSON(self):
+        return self.as_dict().update(self.as_noise_dict())
 #%%

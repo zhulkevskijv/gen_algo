@@ -18,15 +18,15 @@ class ReproductionStats:
 
     def calculate(self):
         self.rr_min = min(self.rr_list)
-        self.ni_rr_min = self.rr_list.index(self.rr_min)
+        self.ni_rr_min = self.rr_list.index(self.rr_min) + 1
         self.rr_max = max(self.rr_list)
-        self.ni_rr_max = self.rr_list.index(self.rr_max)
+        self.ni_rr_max = self.rr_list.index(self.rr_max) + 1
         self.rr_avg = mean(self.rr_list)
         teta_list = [1 - rr for rr in self.rr_list]
         self.teta_min = min(teta_list)
-        self.ni_teta_min = teta_list.index(self.teta_min)
+        self.ni_teta_min = teta_list.index(self.teta_min) + 1
         self.teta_max = max(teta_list)
-        self.ni_teta_max = teta_list.index(self.teta_max)
+        self.ni_teta_max = teta_list.index(self.teta_max) + 1
         self.teta_avg = mean(teta_list)
 
     def __str__(self):

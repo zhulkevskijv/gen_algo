@@ -1,4 +1,7 @@
 stats/
+stats copy/
 venv/
 .idea/
 __pycache__/
+.DS_STORE
+files/

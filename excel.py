@@ -6,6 +6,7 @@ import numpy as np
 
 
 def save_to_excel_internal(sheet, dictionary, col_num = 1, row_num = 2, print_keys = True):
+
     for key, value in dictionary.items():
         if print_keys:
             sheet.write(row_num - 1, col_num, key)
@@ -41,8 +42,8 @@ def save_to_excel(runs_dictionary, selection_func_name):
         'bold': 1,
         'border': 1,
         'align': 'center',
-        'fg_color': 'yellow'})
-
+        'fg_color': 'green'})
+    print(selection_func_name)
     for func_name, runs_stats in runs_dictionary.items():
         worksheet.write(func_num + 1, 0, func_name)
         worksheet.write(func_num + items_len + 3, 0, func_name)
@@ -51,18 +52,24 @@ def save_to_excel(runs_dictionary, selection_func_name):
 
         for run in runs_stats.runs:
             start_range = last_col_num
-            last_col_num = save_to_excel_internal(worksheet, run.pressure_stats.as_dict(), last_col_num, func_num + 1, func_num == 1)
-            last_col_num = save_to_excel_internal(worksheet, run.reproduction_stats.as_dict(), last_col_num, func_num + 1, func_num == 1)
-            last_col_num = save_to_excel_internal(worksheet, run.selection_diff_stats.as_dict(), last_col_num, func_num + 1, func_num == 1)
+            if "FConstALL" not in selection_func_name:
+                last_col_num = save_to_excel_internal(worksheet, run.selection_diff_stats.as_dict(), last_col_num, func_num + 1, func_num == 1)
+                last_col_num = save_to_excel_internal(worksheet, run.pressure_stats.as_dict(), last_col_num, func_num + 1,
+                                                  func_num == 1)
+            last_col_num = save_to_excel_internal(worksheet, run.reproduction_stats.as_dict(), last_col_num,
+                                                  func_num + 1, func_num == 1)
+
+            if "FConstALL" in selection_func_name:
+                last_col_num = save_to_excel_internal(worksheet, run.noise_stats.as_dict(), last_col_num, func_num + 1, func_num == 1)
             i = i + 1
             if func_num == 1:
                 worksheet.merge_range(0, start_range, 0, last_col_num - 1, 'Run ' + str(i), merge_format)
 
         start_range = last_col_num
-        last_col_num = save_to_excel_internal(worksheet, runs_stats.as_dict(), last_col_num, func_num + 1, func_num == 1)
-        if func_num == 1:
-            worksheet.merge_range(0, start_range, 0, last_col_num - 1, 'Avg values', merge_format)
-        last_col_num = save_to_excel_internal(worksheet, runs_stats.as_dict(), 1, func_num + items_len + 3, func_num == 1)
+        # last_col_num = save_to_excel_internal(worksheet, runs_stats.as_dict(), last_col_num, func_num + 1, func_num == 1)
+        # if func_num == 1:
+        #     worksheet.merge_range(0, start_range, 0, last_col_num - 1, 'Avg values', merge_format)
+        last_col_num = save_to_excel_internal(worksheet, runs_stats.as_dict(selection_func_name), 1, func_num + items_len + 3, func_num == 1)
         if func_num == 1:
             worksheet.merge_range(func_num + items_len + 1, 1, func_num + items_len + 1, last_col_num - 1, 'Avg values', merge_format)
 

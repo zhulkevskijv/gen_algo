@@ -7,5 +7,8 @@ class NoiseStats:
         return "\nNI: " + str(self.NI) + "\nConv to: " + str(self.conv_to)
 
     def as_dict(self):
-        return {'NI': [self.NI], 'Conv to': [self.conv_to]}
+        return {
+            'NI': [self.NI],
+            # 'Conv to': [self.conv_to]
+        }
 #%%

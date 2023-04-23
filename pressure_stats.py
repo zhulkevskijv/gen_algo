@@ -47,7 +47,10 @@ class PressureStats:
 
     def calculate_growth_rate_coefficients(self):
         if len(self.grs) > 0:
-            self.gre = self.grs[1]
+            if len(self.grs) > 1:
+                self.gre = self.grs[1]
+            else:
+                self.gre = self.grs[0]
             self.gra = mean(self.grs)
 
     def calculate(self):
