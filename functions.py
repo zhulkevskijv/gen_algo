@@ -117,28 +117,33 @@ class F512subx2:
         return (abs(math.pow(5.12, 2) - ch.fitness) <= DELTA) and abs(decode(ch.code, -5.12, 5.11, len(ch.code), self.is_binary)) <= SIGMA
 
 class Fecx:
-    def __init__(self, c):
+    def __init__(self, c, is_binary):
         self.c = c
+        self.is_binary = is_binary
 
     def estimate(self, chromosome_code):
-        return math.pow(math.e, decode(chromosome_code, 0, 10.23, len(chromosome_code)) * self.c)
+        return math.pow(math.e, decode(chromosome_code, 0, 10.23, len(chromosome_code), self.is_binary) * self.c)
 
-    @staticmethod
-    def get_genotype_value(chromosome_code):
-        return to_decimal(chromosome_code)
+    def get_genotype_value(self, chromosome_code):
+        return np.count_nonzero(chromosome_code)
 
-    @staticmethod
-    def get_optimal(l):
-        return F512subx2.generate_optimal(l)
+    def get_fenotype_value(self,chromosome_code):
+        return decode(chromosome_code, 0, 10.23, len(chromosome_code), self.is_binary)
+
+    # def get_genotype_value(self, chromosome_code):
+    #     return to_decimal(chromosome_code, self.is_binary)
+
+    def get_optimal(self, l):
+        return self.generate_optimal(l)
 
     def generate_optimal(self, length):
         x = 10.23
-        gray_code = encode(x, 0, 10.23, length)
+        gray_code = np.array(encode(x, 0, 10.23, length, self.is_binary))
         return Chromosome(gray_code, math.pow(math.e, x * self.c))
 
     def generate_population(self, n, l, p_m, is_crossover):
         return PopulationFactory(self).generate_population_fecx(n, l, p_m, self.c, is_crossover)
 
     def check_chromosome_success(self, ch: Chromosome):
-        return (abs(math.pow(math.e, 10.23 * self.c) - ch.fitness) <= DELTA) and abs(decode(ch.code, 0, 10.23, len(ch.code)) - 10.23) <= SIGMA
+        return (abs(math.pow(math.e, 10.23 * self.c) - ch.fitness) <= DELTA) and abs(decode(ch.code, 0, 10.23, len(ch.code), self.is_binary) - 10.23) <= SIGMA
 # %%

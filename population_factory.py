@@ -71,16 +71,22 @@ class PopulationFactory:
 
     def generate_population_fecx(self, n, l, p_m,c, is_crossover):
         # if i < 5 or p_m == 0:
-        chromosomes = [self.fitness_function.generate_optimal(l)]
+        # chromosomes = [self.fitness_function.generate_optimal(l)]
         # else:
         #     chromosomes = []
+        # start = len(chromosomes)
+        chromosomes = [self.fitness_function.generate_optimal(l)]
         start = len(chromosomes)
+        for j in range(start, n):
+            code = random.binomial(n=1, p=.5, size=l)
+            fitness = self.fitness_function.estimate(code)
+            chromosomes.append(Chromosome(code, fitness, j + 1))
 
-        x_list = random.binomial(n=1023, p=.5, size=n-start)/100
-
-        for x in x_list:
-            chromosomes.append(Chromosome(encode(x, 0, 10.23, l), math.pow(math.e, c * x), start + 1))
-            start = start + 1
+        # x_list = random.binomial(n=1023, p=.5, size=n-start)/100
+        #
+        # for x in x_list:
+        #     chromosomes.append(Chromosome(encode(x, 0, 10.23, l), math.pow(math.e, c * x), start + 1))
+        #     start = start + 1
 
         return Population(chromosomes, p_m, is_crossover)
 

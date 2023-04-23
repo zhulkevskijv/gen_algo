@@ -24,23 +24,28 @@ release_functions = [
     # (FConstALL(), selection_methods, 'FConstALL', N, 100)
     # (Fx2(0, 10.23, is_binary=True), selection_methods, 'Fx2Bin', N, 10,),
     # (Fx2(0, 10.23, is_binary=False), selection_methods, 'Fx2Gray', N, 10,),
-(F512subx2(is_binary=True), selection_methods, 'F512subx2Bin', N, 10),
-(F512subx2(is_binary=False), selection_methods, 'F512subx2Gray', N, 10),
-# (F512subx2(), selection_methods, 'F512subx2', N, 10),
-# (Fecx(0.25), selection_methods, 'Fecx025', N, 10),
-#(Fecx(1), selection_methods, 'Fecx1', N, 10),
-   # (Fecx(2), selection_methods, 'Fecx2', N, 10),
+# (F512subx2(is_binary=True), selection_methods, 'F512subx2Bin', N, 10),
+# (F512subx2(is_binary=False), selection_methods, 'F512subx2Gray', N, 10),
+(Fecx(0.25, is_binary=True), selection_methods, 'Fecx025Bin', N, 10),
+(Fecx(1, is_binary=True), selection_methods, 'Fecx1Bin', N, 10),
+   (Fecx(2, is_binary=True), selection_methods, 'Fecx2Bin', N, 10),
+# (Fecx(0.25, is_binary=False), selection_methods, 'Fecx025Gray', N, 10),
+# (Fecx(1, is_binary=False), selection_methods, 'Fecx1Gray', N, 10),
+#    (Fecx(2, is_binary=False), selection_methods, 'Fecx2Gray', N, 10),
 ]
 test_functions = [
     # (FHD(100), selection_methods, 'FHD', N, 100)
     # (FConstALL(), selection_methods, 'FConstALL', N, 100)
     # (Fx2(0, 10.23, is_binary=True), selection_methods, 'Fx2Bin', N, 10,),
     # (Fx2(0, 10.23, is_binary=False), selection_methods, 'Fx2Gray', N, 10,),
-    (F512subx2(is_binary=True), selection_methods, 'F512subx2Bin', N, 10),
+    # (F512subx2(is_binary=True), selection_methods, 'F512subx2Bin', N, 10),
     # (F512subx2(is_binary=False), selection_methods, 'F512subx2Gray', N, 10),
-# (Fecx(0.25), selection_methods, 'Fecx025', N, 10),
-#(Fecx(1), selection_methods, 'Fecx1', N, 10),
-   # (Fecx(2), selection_methods, 'Fecx2', N, 10),
+# (Fecx(0.25, is_binary=True), selection_methods, 'Fecx025Bin', N, 10),
+# (Fecx(1, is_binary=True), selection_methods, 'Fecx1Bin', N, 10),
+#    (Fecx(2, is_binary=True), selection_methods, 'Fecx2Bin', N, 10),
+# (Fecx(0.25, is_binary=False), selection_methods, 'Fecx025Gray', N, 10),
+# (Fecx(1, is_binary=False), selection_methods, 'Fecx1Gray', N, 10),
+   (Fecx(2, is_binary=False), selection_methods, 'Fecx2Gray', N, 10),
 ]
 functions = test_functions if env == 'test' else release_functions
 # functions = test_functions
