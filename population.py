@@ -36,8 +36,12 @@ class Population:
 
         if not os.path.exists(path):
             os.makedirs(path)
-
-        sns.histplot([])
+        x_list = [fitness_func.get_fenotype_value(code) for code in self.genotypes_list]
+        axis = sns.histplot(x_list)
+        if (fitness_func_name == 'FConstALL' or fitness_func_name =='FHD'):
+            axis.set_xlim(0,100)
+        else:
+            axis.set_xlim(0, round(fitness_func.get_fenotype_value(fitness_func.generate_optimal(10).code))+1)
         plt.savefig(path + '/' + str(iteration) + '.png')
         plt.close()
 
@@ -57,13 +61,18 @@ class Population:
         plt.savefig(path + '/' + str(iteration) + '.png')
         plt.close()
 
-    def print_fitness_f_distribution(self, folder_name, func_name, run, iteration):
+    def print_fitness_f_distribution(self, folder_name, func_name, run, iteration, fitness_func):
+        fitness_func_name = fitness_func.__class__.__name__
         path = 'stats/' + folder_name + '/' + str(N) + '/' + func_name + '/' + str(run) + '/fitness_values'
 
         if not os.path.exists(path):
             os.makedirs(path)
 
-        sns.displot(self.fitness_list)
+        axis = sns.histplot(self.fitness_list)
+        if (fitness_func_name == 'FConstALL' or fitness_func_name == 'FHD'):
+            axis.set_xlim(0, fitness_func.generate_optimal(100).fitness)
+        else:
+            axis.set_xlim(0, round(fitness_func.generate_optimal(10).fitness)+1)
         plt.savefig(path + '/' + str(iteration) + '.png')
         plt.close()
 

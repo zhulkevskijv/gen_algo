@@ -43,7 +43,6 @@ def save_to_excel(runs_dictionary, selection_func_name):
         'border': 1,
         'align': 'center',
         'fg_color': 'green'})
-    print(selection_func_name)
     for func_name, runs_stats in runs_dictionary.items():
         worksheet.write(func_num + 1, 0, func_name)
         worksheet.write(func_num + items_len + 3, 0, func_name)

@@ -45,18 +45,30 @@ def binary_to_gray(bin_arr):
     return bin(n)[2:]
 
 
-def encode(x, a, b, m):
+def encode(x, a, b, m, is_binary):
     n = int((x - a) * (2 ** m - 1) / (b - a))
-    n ^= (n >> 1)
-    code = bin(n)[2:]
-    while len(code) < m:
-        code = '0' + code
-    return split_str_code(code)
+    if is_binary:
+        code = bin(n)[2:]
+        while len(code) < m:
+            code = '0' + code
+        return split_str_code(code)
+    else:
+        n ^= (n >> 1)
+        code = bin(n)[2:]
+        while len(code) < m:
+            code = '0' + code
+        return split_str_code(code)
 
 
-def to_decimal(gray_code_arr):
-    bin_arr = gray_to_binary(gray_code_arr)
-    str_bin_code = ''.join([str(x) for x in bin_arr])
+
+
+def to_decimal(code_arr, is_binary):
+    # print('Code arr - ', code_arr)
+    arr = code_arr if is_binary else gray_to_binary(code_arr)
+    # print(bin_arr)
+    str_bin_code = ''.join([str(x) for x in arr])
+    # print(str_bin_code)
+    # print(int(str_bin_code, 2))
     return int(str_bin_code, 2)
 
 
@@ -64,5 +76,7 @@ def split_str_code(s):
     return [int(ch) for ch in s]
 
 
-def decode(code, a, b, m):
-    return round(a + to_decimal(code) * ((b - a) / (math.pow(2, m) - 1)), 2)
+def decode(code, a, b, m, is_binary):
+    # print(code,' ',a,' ',b,' ',m)
+    return round(a + to_decimal(code, is_binary) * ((b - a) / (math.pow(2, m) - 1)), 2)
+

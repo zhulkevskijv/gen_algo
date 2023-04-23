@@ -36,7 +36,7 @@ def save_run_plots(ff_name, sf_name, run, iteration):
 def main(fitness_function, selection_functions: [], file_name, *args):
     p_start = time.time()
     runs_dict = {}
-    ff_name = fitness_function.__class__.__name__
+    ff_name = file_name
 
     for selection_function in selection_functions:
         for i in range(4):

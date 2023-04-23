@@ -45,15 +45,19 @@ class FHD:
 
 
 class Fx:
-    def __init__(self, a, b):
+    def __init__(self, a, b, is_binary):
         self.a = a
         self.b = b
+        self.is_binary = is_binary
 
     def estimate(self, chromosome):
-        return decode(chromosome, self.a, self.b, len(chromosome))
+        return decode(chromosome, self.a, self.b, len(chromosome), self.is_binary)
+
+    def get_fenotype_value(self, chromosome_code):
+        return decode(chromosome_code, self.a, self.b, len(chromosome_code), self.is_binary)
 
     def get_genotype_value(self, chromosome_code):
-        return decode(chromosome_code, self.a, self.b, len(chromosome_code))
+        return np.count_nonzero(chromosome_code)
 
     def generate_optimal(self, length):
         gray_code = encode(self.b, self.a, self.b, length)
@@ -66,16 +70,18 @@ class Fx:
         return PopulationFactory(self).generate_population_fx(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self, ch: Chromosome):
-        return ((self.b - ch.fitness) <= DELTA) and (decode(ch.code, self.a, self.b, len(ch.code)) - self.b) <= SIGMA
+        return ((self.b - ch.fitness) <= DELTA) and (decode(ch.code, self.a, self.b, len(ch.code), self.is_binary) - self.b) <= SIGMA
 
 
 class Fx2(Fx):
     def estimate(self, chromosome):
-        return math.pow(decode(chromosome, self.a, self.b, len(chromosome)), 2)
+        if self.is_binary:
+            return math.pow(decode(chromosome, self.a, self.b, len(chromosome), self.is_binary), 2)
+        return math.pow(decode(chromosome, self.a, self.b, len(chromosome), self.is_binary), 2)
 
     def generate_optimal(self, length):
-        gray_code = encode(self.b, self.a, self.b, length)
-        return Chromosome(gray_code, math.pow(self.b, 2))
+        code = np.array(encode(self.b, self.a, self.b, length, self.is_binary))
+        return Chromosome(code, math.pow(self.b, 2))
 
     def get_optimal(self, l):
         return self.generate_optimal(l)
@@ -84,7 +90,7 @@ class Fx2(Fx):
         return PopulationFactory(self).generate_population_fx2(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self, ch: Chromosome):
-        return ((self.b ** 2 - ch.fitness) <= DELTA) and (decode(ch.code, self.a, self.b, len(ch.code)) - self.b) <= SIGMA
+        return ((self.b ** 2 - ch.fitness) <= DELTA) and (decode(ch.code, self.a, self.b, len(ch.code), self.is_binary) - self.b) <= SIGMA
 
 
 class F512subx2:

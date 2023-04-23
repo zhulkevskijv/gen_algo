@@ -39,7 +39,7 @@ class EvoAlgorithm:
             if self.iteration < iterations_to_plot and run < runs_to_plot:
                 self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
                 self.population.print_genotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
-                self.population.print_fitness_f_distribution(folder_name, self.sf_name, run + 1, self.iteration)
+                self.population.print_fitness_f_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
             self.population.update_keys()
             keys_before_selection = self.population.get_keys_list()
             # best_genotype = self.population.genotypes_list[0] if run < 1 else self.population.get_best_genotype()
@@ -81,7 +81,7 @@ class EvoAlgorithm:
         if run < runs_to_plot:
             self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
             self.population.print_genotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
-            self.population.print_fitness_f_distribution(folder_name, self.sf_name, run + 1, self.iteration)
+            self.population.print_fitness_f_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
         self.reproduction_stats.calculate()
         if 'FConstALL' not in self.fitness_function.__class__.__name__:
             self.pressure_stats.takeover_time = self.iteration
