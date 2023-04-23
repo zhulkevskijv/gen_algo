@@ -250,53 +250,53 @@ class RunsStats:
             })
             return res_dict
         return {
+            'Suc': [self.success_percentage],
+
+            'Min_NI': [self.min_NI],
+            'Max_NI': [self.max_NI],
             'Avg_NI': [self.avg_NI],
+            'Sigma_NI': [self.sigma_NI],
+
+            'Min_I_min': [self.min_I_min],
+            'NI_I_min': [self.NI_I_min],
+            'Max_I_max': [self.max_I_max],
+            'NI_I_max': [self.NI_I_max],
             'Avg_I_min': [self.avg_I_min],
             'Avg_I_max': [self.avg_I_max],
             'Avg_I_avg': [self.avg_I_avg],
-            'AvgGR_early': [self.avg_gr_early],
-            'AvgGR_late': [self.avg_gr_late],
-            'AvgGR_avg': [self.avg_gr_avg],
-            'Avg_RR_min': [self.avg_rr_min],
-            'Avg_RR_max': [self.avg_rr_max],
-            'Avg_RR_avg': [self.avg_rr_avg],
-            'Avg_Teta_min': [self.avg_teta_min],
-            'Avg_Teta_max': [self.avg_teta_max],
-            'Avg_Teta_avg': [self.avg_teta_avg],
-            'Avg_s_min': [self.avg_s_min],
-            'Avg_s_max': [self.avg_s_max],
-            'Avg_s_avg': [self.avg_s_avg],
-
-            'Max_NI': [self.max_NI],
-            'NI_I_max': [self.NI_I_max],
-            'Max_I_max': [self.max_I_max],
-            'MaxGR_early': [self.max_gr_early],
-            'MaxGR_late': [self.max_gr_late],
-            'MaxGR_avg': [self.max_gr_avg],
-            'NI_RR_max': [self.NI_rr_max],
-            'Max_RR_max': [self.max_rr_max],
-            'NI_Teta_max': [self.NI_teta_max],
-            'Max_Teta_max': [self.max_teta_max],
-            'NI_s_max': [self.NI_s_max],
-            'Max_s_max': [self.max_s_max],
-
-            'Min_NI': [self.min_NI],
-            'NI_I_min': [self.NI_I_min],
-            'Min_I_min': [self.min_I_min],
-            'MinGR_early': [self.min_gr_early],
-            'MinGR_late': [self.min_gr_late],
-            'MinGR_avg': [self.min_gr_avg],
-            'NI_RR_min': [self.NI_rr_min],
-            'Min_RR_min': [self.min_rr_min],
-            'NI_Teta_min': [self.NI_teta_min],
-            'Min_Teta_min': [self.min_teta_min],
-            'NI_s_min': [self.NI_s_min],
-            'Min_s_min': [self.min_s_min],
-
-            'Sigma_NI': [self.sigma_NI],
             'Sigma_I_min': [self.sigma_I_min],
             'Sigma_I_max': [self.sigma_I_max],
             'Sigma_I_avg': [self.sigma_I_avg],
+
+            'AvgGR_early': [self.avg_gr_early],
+            'MinGR_early': [self.min_gr_early],
+            'MaxGR_early': [self.max_gr_early],
+
+            'AvgGR_late': [self.avg_gr_late],
+            'MinGR_late': [self.min_gr_late],
+            'MaxGR_late': [self.max_gr_late],
+
+            'AvgGR_avg': [self.avg_gr_avg],
+            'MinGR_avg': [self.min_gr_avg],
+            'MaxGR_avg': [self.max_gr_avg],
+
+            'Min_RR_min': [self.min_rr_min],
+            'NI_RR_min': [self.NI_rr_min],
+            'Max_RR_max': [self.max_rr_max],
+            'NI_RR_max': [self.NI_rr_max],
+            'Avg_RR_min': [self.avg_rr_min],
+            'Avg_RR_max': [self.avg_rr_max],
+            'Avg_RR_avg': [self.avg_rr_avg],
+
+            'Min_Teta_min': [self.min_teta_min],
+            'NI_Teta_min': [self.NI_teta_min],
+            'Max_Teta_max': [self.max_teta_max],
+            'NI_Teta_max': [self.NI_teta_max],
+
+            'Avg_Teta_min': [self.avg_teta_min],
+            'Avg_Teta_max': [self.avg_teta_max],
+            'Avg_Teta_avg': [self.avg_teta_avg],
+
             'Sigma_RR_min': [self.sigma_rr_min],
             'Sigma_RR_max': [self.sigma_rr_max],
             'Sigma_RR_avg': [self.sigma_rr_avg],
@@ -304,7 +304,15 @@ class RunsStats:
             'Sigma_Teta_max': [self.sigma_teta_max],
             'Sigma_Teta_avg': [self.sigma_teta_avg],
 
-            'Suc': [self.success_percentage]
+            'Min_s_min': [self.min_s_min],
+            'NI_s_min': [self.NI_s_min],
+            'Max_s_max': [self.max_s_max],
+            'NI_s_max': [self.NI_s_max],
+
+            'Avg_s_min': [self.avg_s_min],
+            'Avg_s_max': [self.avg_s_max],
+            'Avg_s_avg': [self.avg_s_avg],
+
         }
 
     def as_noise_dict(self):

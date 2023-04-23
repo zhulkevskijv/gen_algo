@@ -30,13 +30,14 @@ class Population:
         self.optimal_fitness = self.get_max_fitness()
         self.mutation_step_conv = 0
 
-    def print_fenotypes_distribution(self, folder_name, func_name, run, iteration):
+    def print_fenotypes_distribution(self, folder_name, func_name, run, iteration, fitness_func):
+        fitness_func_name = fitness_func.__class__.__name__
         path = 'stats/' + folder_name + '/' + str(N) + '/' + func_name + '/' + str(run) + '/fenotypes'
 
         if not os.path.exists(path):
             os.makedirs(path)
 
-        sns.displot(self.fitness_list)
+        sns.histplot([])
         plt.savefig(path + '/' + str(iteration) + '.png')
         plt.close()
 
@@ -56,6 +57,16 @@ class Population:
         plt.savefig(path + '/' + str(iteration) + '.png')
         plt.close()
 
+    def print_fitness_f_distribution(self, folder_name, func_name, run, iteration):
+        path = 'stats/' + folder_name + '/' + str(N) + '/' + func_name + '/' + str(run) + '/fitness_values'
+
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        sns.displot(self.fitness_list)
+        plt.savefig(path + '/' + str(iteration) + '.png')
+        plt.close()
+
     def estimate_convergence(self, avg_fitness_list=None, ff_name=None):
         if self.p_m == 0:
             # print(self.genotypes_list)
@@ -71,7 +82,7 @@ class Population:
                     self.mutation_step_conv += 1
                 else:
                     self.mutation_step_conv = 0
-                print(self.mutation_step_conv)
+                # print(self.mutation_step_conv)
                 if self.mutation_step_conv >= MUTATION_LOW_LIMIT:
                     return True
 

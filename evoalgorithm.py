@@ -37,11 +37,12 @@ class EvoAlgorithm:
 
         while not convergent and self.iteration < stop:
             if self.iteration < iterations_to_plot and run < runs_to_plot:
-                self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration)
+                self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
                 self.population.print_genotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
+                self.population.print_fitness_f_distribution(folder_name, self.sf_name, run + 1, self.iteration)
             self.population.update_keys()
             keys_before_selection = self.population.get_keys_list()
-            best_genotype = self.population.genotypes_list[0] if run < 1 else self.population.get_best_genotype()
+            # best_genotype = self.population.genotypes_list[0] if run < 1 else self.population.get_best_genotype()
             f = avg_fitness_list[self.iteration]
             self.population = self.selection_function.select(self.population)
             keys_after_selection = self.population.get_keys_list()
@@ -57,6 +58,7 @@ class EvoAlgorithm:
             best_fitness_list.append(best_fs)
             optim_num_list.append(optim_num)
             self.selection_diff_stats.s_list.append(fs - f)
+            best_genotype = self.population.genotypes_list[0] if run < 1 else self.population.get_best_genotype()
             num_of_best = self.population.get_chromosomes_copies_count(best_genotype)
             self.reproduction_stats.rr_list.append(1 - (len(not_selected_chromosomes) / N))
             self.reproduction_stats.best_rr_list.append(num_of_best / len(self.population.chromosomes))
@@ -77,8 +79,9 @@ class EvoAlgorithm:
             self.pressure_stats.NI = self.iteration
             self.noise_stats.NI = self.iteration
         if run < runs_to_plot:
-            self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration)
+            self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
             self.population.print_genotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
+            self.population.print_fitness_f_distribution(folder_name, self.sf_name, run + 1, self.iteration)
         self.reproduction_stats.calculate()
         if 'FConstALL' not in self.fitness_function.__class__.__name__:
             self.pressure_stats.takeover_time = self.iteration

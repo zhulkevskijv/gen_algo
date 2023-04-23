@@ -42,8 +42,8 @@ class PressureStats:
             self.i_min = min(nni)
             self.i_max = max(nni)
             self.i_avg = mean(nni)
-            self.i_imin = self.intensities.index(self.i_min)
-            self.i_imax = self.intensities.index(self.i_max)
+            self.i_imin = self.intensities.index(self.i_min) + 1
+            self.i_imax = self.intensities.index(self.i_max) + 1
 
     def calculate_growth_rate_coefficients(self):
         if len(self.grs) > 0:

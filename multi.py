@@ -15,25 +15,22 @@ release_sm = [WindowRWS(2),WindowRWS(10), WindowSUS(2),WindowSUS(10), PowerLawRW
 testing_sm = [
     # PowerLawSUS(1.005),
     # PowerLawSUS(1.05),
-    # WindowRWS(2),
+    WindowRWS(2),
 WindowSUS(2)
 ]
 selection_methods = testing_sm if env == 'test' else release_sm
 release_functions = [
-    # (FHD(10), selection_methods, 'FHD_100', N, 100, 0),
-    (FConstALL(),selection_methods, 'FConstALL', N, 100),
-    # (FHD(100), selection_methods, 'FHD', N, 100),
+(FHD(100), selection_methods, 'FHD', N, 100)
+    # (FConstALL(), selection_methods, 'FConstALL', N, 100)
     # (Fx2(0, 10.23), selection_methods, 'Fx2', N, 10),
-    # (Fx2(0, 10.23), selection_methods, 'Fx2_pm', N, 10, fx2_pm),
-    # (F512subx2(), selection_methods, '5_12_sub_X2', N, 10),
-    # (F512subx2(), selection_methods, '5_12_sub_X2_pm', N, 10, fx2_pm),
-    # (Fecx(0.25), selection_methods, 'Fecx025', N, 10),
-    # (Fecx(1), selection_methods, 'Fecx1', N, 10),
-    # (Fecx(2), selection_methods, 'Fecx2', N, 10),
+# (F512subx2(), selection_methods, 'F512subx2', N, 10),
+# (Fecx(0.25), selection_methods, 'Fecx025', N, 10),
+#(Fecx(1), selection_methods, 'Fecx1', N, 10),
+   # (Fecx(2), selection_methods, 'Fecx2', N, 10),
 ]
 test_functions = [
-    # (FHD(100), selection_methods, 'FHD', N, 100)
-    (FConstALL(), selection_methods, 'FConstALL', N, 100)
+    (FHD(100), selection_methods, 'FHD', N, 100)
+    # (FConstALL(), selection_methods, 'FConstALL', N, 100)
     # (Fx2(0, 10.23), selection_methods, 'Fx2', N, 10),
 # (F512subx2(), selection_methods, 'F512subx2', N, 10),
 # (Fecx(0.25), selection_methods, 'Fecx025', N, 10),

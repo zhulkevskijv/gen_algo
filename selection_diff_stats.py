@@ -12,9 +12,9 @@ class SelectionDiffStats:
 
     def calculate(self):
         self.s_min = min(self.s_list)
-        self.ni_s_min = self.s_list.index(self.s_min)
+        self.ni_s_min = self.s_list.index(self.s_min) + 1
         self.s_max = max(self.s_list)
-        self.ni_s_max = self.s_list.index(self.s_max)
+        self.ni_s_max = self.s_list.index(self.s_max) + 1
         self.s_avg = mean(self.s_list)
 
     def __str__(self):
