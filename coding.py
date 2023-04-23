@@ -2,8 +2,21 @@ import math
 
 
 def flip_num(num):
-    return 0 if num != 0 else 1
+    return 0 if num != '0' else 1
 
+
+
+def graytoBinary(gray):
+    binary = []
+    binary += str(gray[0])
+
+    for i in range(1, len(gray)):
+        if (gray[i] == 0):
+            binary += str(binary[i - 1])
+        else:
+            binary += str(flip_num(binary[i - 1]))
+
+    return binary
 
 def float_bin(number, places=3):
     whole, dec = str(number).split(".")
@@ -26,9 +39,10 @@ def decimal_converter(num):
 
 
 def gray_to_binary(gray):
-    binary_code = [gray[0]]
-
+    # print("gr", gray)
+    binary_code = [str(gray[0])]
     for i in range(1, len(gray)):
+        # print("gray", i, gray[i])
         if gray[i] == 0:
             binary_code += str(binary_code[i - 1])
         else:
@@ -63,8 +77,10 @@ def encode(x, a, b, m, is_binary):
 
 
 def to_decimal(code_arr, is_binary):
-    # print('Code arr - ', code_arr)
-    arr = code_arr if is_binary else gray_to_binary(code_arr)
+    # print(is_binary)
+    # print("code_arr", code_arr)
+    arr = code_arr if is_binary else graytoBinary(code_arr)
+    # print(arr)
     # print(bin_arr)
     str_bin_code = ''.join([str(x) for x in arr])
     # print(str_bin_code)
@@ -77,6 +93,5 @@ def split_str_code(s):
 
 
 def decode(code, a, b, m, is_binary):
-    # print(code,' ',a,' ',b,' ',m)
     return round(a + to_decimal(code, is_binary) * ((b - a) / (math.pow(2, m) - 1)), 2)
 

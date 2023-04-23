@@ -56,13 +56,16 @@ class PopulationFactory:
     def generate_population_f512(self, n, l, p_m, is_crossover):
         chromosomes = [self.fitness_function.generate_optimal(l)]
         start = len(chromosomes)
-
-        fitness_list = random.binomial(n=512**2, p=.5, size=n-start)/10000
-
-        for y in fitness_list:
-            x = round(math.sqrt(5.12 ** 2 - y), 2)
-            chromosomes.append(Chromosome(encode(x, -5.12, 5.11, l), math.pow(5.12, 2) - math.pow(x, 2), start + 1))
-            start = start + 1
+        for j in range(start, n):
+            code = random.binomial(n=1, p=.5, size=l)
+            fitness = self.fitness_function.estimate(code)
+            chromosomes.append(Chromosome(code, fitness, j + 1))
+        # fitness_list = random.binomial(n=512**2, p=.5, size=n-start)/10000
+        #
+        # for y in fitness_list:
+        #     x = round(math.sqrt(5.12 ** 2 - y), 2)
+        #     chromosomes.append(Chromosome(encode(x, -5.12, 5.11, l), math.pow(5.12, 2) - math.pow(x, 2), start + 1))
+        #     start = start + 1
 
         return Population(chromosomes, p_m, is_crossover)
 

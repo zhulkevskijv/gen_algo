@@ -40,6 +40,8 @@ class Population:
         axis = sns.histplot(x_list)
         if (fitness_func_name == 'FConstALL' or fitness_func_name =='FHD'):
             axis.set_xlim(0,100)
+        elif fitness_func_name == 'F512subx2':
+            axis.set_xlim(-5.12, 5.11)
         else:
             axis.set_xlim(0, round(fitness_func.get_fenotype_value(fitness_func.generate_optimal(10).code))+1)
         plt.savefig(path + '/' + str(iteration) + '.png')
