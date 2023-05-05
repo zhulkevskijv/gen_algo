@@ -33,11 +33,13 @@ class EvoAlgorithm:
         best_fitness_list = [self.population.get_max_fitness()]
         optim_num_list = [self.population.get_optim_num()]
         stop = G
+        if "FConstALL"  in self.fitness_function.__class__.__name__:
+            stop = 2500
         convergent = self.population.estimate_convergence(avg_fitness_list, self.fitness_function.__class__.__name__)
-
         while not convergent and self.iteration < stop:
             if self.iteration < iterations_to_plot and run < runs_to_plot:
-                self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
+                if "FConstALL" not in self.fitness_function.__class__.__name__ and "FHD" not in self.fitness_function.__class__.__name__:
+                    self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
                 self.population.print_genotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
                 self.population.print_fitness_f_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
             self.population.update_keys()
@@ -60,9 +62,9 @@ class EvoAlgorithm:
             self.selection_diff_stats.s_list.append(fs - f)
             best_genotype = self.population.genotypes_list[0] if run < 1 else self.population.get_best_genotype()
             num_of_best = self.population.get_chromosomes_copies_count(best_genotype)
-            self.reproduction_stats.rr_list.append(1 - (len(not_selected_chromosomes) / N))
-            self.reproduction_stats.best_rr_list.append(num_of_best / len(self.population.chromosomes))
-            self.pressure_stats.intensities.append(PressureStats.calculate_intensity(self.population.get_mean_fitness(), f, f_std))
+            self.reproduction_stats.rr_list.append(1 - (len(not_selected_chromosomes) / len(self.population.chromosomes)))
+            # self.reproduction_stats.best_rr_list.append(num_of_best / len(self.population.chromosomes))
+            self.pressure_stats.intensities.append(PressureStats.calculate_intensity(fs, f, f_std))
             self.pressure_stats.f_best.append(self.population.get_max_fitness())
             self.pressure_stats.num_of_best.append(num_of_best)
             self.iteration += 1
@@ -70,7 +72,7 @@ class EvoAlgorithm:
                                                                                self.pressure_stats.num_of_best[self.iteration-1],
                                                                                self.pressure_stats.f_best[self.iteration],
                                                                                self.pressure_stats.f_best[self.iteration-1]))
-            if num_of_best >= N / 2 and self.pressure_stats.grl is None:
+            if num_of_best >= len(self.population.chromosomes) / 2 and self.pressure_stats.grl is None:
                 self.pressure_stats.grli = self.iteration
                 self.pressure_stats.grl = self.pressure_stats.grs[-1]
             convergent = self.population.estimate_convergence(avg_fitness_list, self.fitness_function.__class__.__name__)
@@ -79,7 +81,8 @@ class EvoAlgorithm:
             self.pressure_stats.NI = self.iteration
             self.noise_stats.NI = self.iteration
         if run < runs_to_plot:
-            self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
+            if "FConstALL" not in self.fitness_function.__class__.__name__ and "FHD" not in self.fitness_function.__class__.__name__:
+                self.population.print_fenotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
             self.population.print_genotypes_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
             self.population.print_fitness_f_distribution(folder_name, self.sf_name, run + 1, self.iteration, self.fitness_function)
         self.reproduction_stats.calculate()
@@ -101,25 +104,25 @@ class EvoAlgorithm:
         else:
             return any([self.fitness_function.check_chromosome_success(p) for p in self.population.chromosomes])
 
-    @staticmethod
-    def calculate_noise(sf):
-        pop = FConstALL().generate_population(N, 100, 0)
-        population = Population(pop.chromosomes.copy(), pop.p_m)
-        iteration = 0
-        stop = G
-
-        if type(sf) == WindowRWS or type(sf) == WindowSUS:
-            sf.fh_worst_list = []
-
-        while not population.estimate_convergence() and iteration < stop:
-            population = sf.select(population)
-            iteration += 1
-
-        ns = NoiseStats()
-
-        if population.estimate_convergence():
-            ns.NI = iteration
-            ns.conv_to = population.chromosomes[0].code
-
-        return ns
+    # @staticmethod
+    # def calculate_noise(sf):
+    #     pop = FConstALL().generate_population(N, 100, 0)
+    #     population = Population(pop.chromosomes.copy(), pop.p_m)
+    #     iteration = 0
+    #     stop = G
+    #
+    #     if type(sf) == WindowRWS or type(sf) == WindowSUS:
+    #         sf.fh_worst_list = []
+    #
+    #     while not population.estimate_convergence() and iteration < stop:
+    #         population = sf.select(population)
+    #         iteration += 1
+    #
+    #     ns = NoiseStats()
+    #
+    #     if population.estimate_convergence():
+    #         ns.NI = iteration
+    #         ns.conv_to = population.chromosomes[0].code
+    #
+    #     return ns
 #%%

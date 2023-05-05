@@ -20,6 +20,9 @@ class RWS:
     def select(self, population):
         return self.rws(population)
 
+    def get_name(self):
+        return self.__class__.__name__
+
 
 # class DisruptiveRWS:
 #     @staticmethod

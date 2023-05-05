@@ -4,7 +4,7 @@ from statistics import mean
 class ReproductionStats:
     def __init__(self):
         self.rr_list = []
-        self.best_rr_list = []
+        # self.best_rr_list = []
         self.rr_min = None
         self.ni_rr_min = None
         self.rr_max = None

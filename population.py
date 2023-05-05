@@ -1,5 +1,4 @@
 import os
-import random
 
 import numpy as np
 import seaborn as sns
@@ -8,7 +7,7 @@ import matplotlib.pyplot as plt
 
 from chromosome import Chromosome
 from constants import MUTATION_LOW_LIMIT
-from constants import N, EPS
+from constants import EPS
 
 from itertools import groupby
 
@@ -19,6 +18,31 @@ def all_equal(iterable):
 def all_the_same(elements):
     return len(elements) < 1 or len(elements) == elements.count(elements[0])
 
+hamming_limits = {
+    'FConstALL': (0, 100),
+    'FHD': (0, 100),
+    'Fx2': (0, 10),
+    'F512subx2': (0, 10),
+    'Fecx': (0, 10),
+    'exp_4': (0, 10),
+    'exp_5': (0, 10),
+}
+x_limits = {
+    'exp_1': (0, 11),
+    'exp_2': (-6, 6),
+    'exp_3': (0, 11),
+    'exp_4': (0, 11),
+    'exp_5': (0, 11),
+}
+y_limits = {
+    'FConstALL': (0, 100),
+    'FHD': (0, 10000),
+    'Fx2': (0, 105),
+    'F512subx2': (0, 27),
+    'Fecx': (0, 13),
+    'exp_4': (0, 27723),
+    'exp_5': (0, 768_573_565),
+}
 
 class Population:
     def __init__(self, chromosomes, p_m, is_crossover):
@@ -27,21 +51,22 @@ class Population:
         self.genotypes_list = [list(x.code) for x in self.chromosomes]
         self.p_m = p_m
         self.is_crossover = is_crossover
+        self.optimal_chromosome = chromosomes[0]
         self.optimal_fitness = self.get_max_fitness()
         self.mutation_step_conv = 0
 
     def print_fenotypes_distribution(self, folder_name, func_name, run, iteration, fitness_func):
         fitness_func_name = fitness_func.__class__.__name__
-        path = 'stats/' + folder_name + '/' + str(N) + '/' + func_name + '/' + str(run) + '/fenotypes'
+        path = 'stats/' + folder_name + '/' + str(len(self.chromosomes)) + '/' + func_name + '/' + str(run) + '/fenotypes'
 
         if not os.path.exists(path):
             os.makedirs(path)
         x_list = [fitness_func.get_fenotype_value(code) for code in self.genotypes_list]
         axis = sns.histplot(x_list)
-        if (fitness_func_name == 'FConstALL' or fitness_func_name =='FHD'):
+        if fitness_func_name == 'FConstALL' or fitness_func_name =='FHD':
             axis.set_xlim(0,100)
         elif fitness_func_name == 'F512subx2':
-            axis.set_xlim(-5.12, 5.11)
+            axis.set_xlim(-5.5, 5.5)
         else:
             axis.set_xlim(0, round(fitness_func.get_fenotype_value(fitness_func.generate_optimal(10).code))+1)
         plt.savefig(path + '/' + str(iteration) + '.png')
@@ -49,32 +74,39 @@ class Population:
 
     def print_genotypes_distribution(self, folder_name, func_name, run, iteration, fitness_func):
         fitness_func_name = fitness_func.__class__.__name__
-        path = 'stats/' + folder_name + '/' + str(N) + '/' + func_name + '/' + str(run) + '/genotypes'
+        path = 'stats/' + folder_name + '/' + str(len(self.chromosomes)) + '/' + func_name + '/' + str(run) + '/genotypes'
 
         if not os.path.exists(path):
             os.makedirs(path)
 
         x_list = [fitness_func.get_genotype_value(code) for code in self.genotypes_list]
-        axis = sns.histplot(x_list)
-        if (fitness_func_name == 'FConstALL' or fitness_func_name =='FHD'):
-            axis.set_xlim(0,100)
+
+        if fitness_func_name == 'FHD':
+            axis = sns.histplot(x_list, binwidth=5, binrange=(0, 100))
+            axis.set_xlim(0, 100)
         else:
-            axis.set_xlim(0, 10)
+            axis = sns.histplot(x_list)
+            if fitness_func_name == 'FConstALL':
+                axis.set_xlim(0,100)
+            else:
+                axis.set_xlim(0, 10)
         plt.savefig(path + '/' + str(iteration) + '.png')
         plt.close()
 
     def print_fitness_f_distribution(self, folder_name, func_name, run, iteration, fitness_func):
         fitness_func_name = fitness_func.__class__.__name__
-        path = 'stats/' + folder_name + '/' + str(N) + '/' + func_name + '/' + str(run) + '/fitness_values'
-
+        path = 'stats/' + folder_name + '/' + str(len(self.chromosomes)) + '/' + func_name + '/' + str(run) + '/fitness_values'
         if not os.path.exists(path):
             os.makedirs(path)
-
-        axis = sns.histplot(self.fitness_list)
-        if (fitness_func_name == 'FConstALL' or fitness_func_name == 'FHD'):
-            axis.set_xlim(0, fitness_func.generate_optimal(100).fitness)
+        if fitness_func_name == 'FHD':
+            axis = sns.histplot(self.fitness_list, stat='count', binrange=(0, 10000), binwidth=500)
+            axis.set_xlim(0, 10000)
         else:
-            axis.set_xlim(0, round(fitness_func.generate_optimal(10).fitness)+1)
+            axis = sns.histplot(self.fitness_list, stat='count')
+            if fitness_func_name == 'FConstALL':
+                axis.set_xlim(0, fitness_func.generate_optimal(100).fitness)
+            else:
+                axis.set_xlim(0, round(fitness_func.generate_optimal(10).fitness)+1)
         plt.savefig(path + '/' + str(iteration) + '.png')
         plt.close()
 
@@ -85,7 +117,7 @@ class Population:
         else:
             if 'FConstALL' in ff_name:
                 # homogeneity
-                return np.all(abs(np.array(self.genotypes_list).sum(axis=0) / N - 0.5) >= 0.49)
+                return np.all(abs(np.array(self.genotypes_list).sum(axis=0) / len(self.chromosomes) - 0.5) >= 0.49)
             else:
                 if len(avg_fitness_list) < 2:
                     return False
@@ -93,7 +125,6 @@ class Population:
                     self.mutation_step_conv += 1
                 else:
                     self.mutation_step_conv = 0
-                # print(self.mutation_step_conv)
                 if self.mutation_step_conv >= MUTATION_LOW_LIMIT:
                     return True
 
@@ -112,24 +143,20 @@ class Population:
         if self.p_m == 0:
             return
         for chromosome in self.chromosomes:
-            for i in range(0, len(chromosome.code)):
-                if random.random() < self.p_m:
-                    chromosome.code[i] = int(not chromosome.code[i])
-                    chromosome.fitness = fitness_function.estimate(chromosome.code)
+            chromosome.code[np.random.rand() <= self.p_m] ^= 1
+            chromosome.fitness = fitness_function.estimate(chromosome.code)
         self.update()
 
     def crossover(self, fitness_function):
-        if (self.is_crossover):
+        if self.is_crossover:
             N = len(self.chromosomes)
-            indeces = np.random.choice(N, N // 2, replace=False)
+            indeces = np.random.choice(N //2, N // 2, replace=False)
             for index in indeces:
                 crossover_point = np.random.choice(N-2, 1)[0]
-                first_slice = slice(0,crossover_point+1)
-                second_slice = slice(crossover_point+1, N)
                 ch1 = self.chromosomes[index]
                 ch2 = self.chromosomes[N-1 -index]
-                self.chromosomes[index].code = np.concatenate((ch1.code[first_slice], ch2.code[second_slice]), axis=0)
-                self.chromosomes[N-1-index].code = np.concatenate((ch2.code[first_slice],  ch1.code[second_slice]), axis=0)
+                self.chromosomes[index].code = np.concatenate((ch1.code[0:crossover_point+1], ch2.code[crossover_point+1: N]), axis=0)
+                self.chromosomes[N-1-index].code = np.concatenate((ch2.code[0:crossover_point+1],  ch1.code[crossover_point+1: N]), axis=0)
                 self.chromosomes[N - 1 - index].fitness = fitness_function.estimate(self.chromosomes[N - 1 - index].code)
                 self.chromosomes[index].fitness = fitness_function.estimate(self.chromosomes[index].code)
             self.update()
@@ -141,7 +168,7 @@ class Population:
         return max(self.fitness_list)
 
     def get_optim_num(self):
-        optim_list = list(filter(lambda x: x == self.optimal_fitness, self.fitness_list))
+        optim_list = list(filter(lambda x: np.array_equal(x, self.optimal_chromosome.code), self.genotypes_list))
         return len(optim_list)
 
     def get_best_genotype(self):

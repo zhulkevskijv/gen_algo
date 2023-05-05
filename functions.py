@@ -41,7 +41,7 @@ class FHD:
         return self.generate_optimal(l)
 
     def generate_population(self, n, l, p_m, is_crossover):
-        return PopulationFactory(self).generate_population_fhd(n, l, p_m, is_crossover)
+        return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
 
 
 class Fx:
@@ -60,14 +60,14 @@ class Fx:
         return np.count_nonzero(chromosome_code)
 
     def generate_optimal(self, length):
-        gray_code = encode(self.b, self.a, self.b, length)
+        gray_code = encode(self.b, self.a, self.b, length, self.is_binary)
         return Chromosome(gray_code, self.b)
 
     def get_optimal(self, l):
         return self.generate_optimal(l)
 
     def generate_population(self, n, l, p_m, is_crossover):
-        return PopulationFactory(self).generate_population_fx(n, l, p_m, is_crossover)
+        return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self, ch: Chromosome):
         return ((self.b - ch.fitness) <= DELTA) and (decode(ch.code, self.a, self.b, len(ch.code), self.is_binary) - self.b) <= SIGMA
@@ -85,7 +85,7 @@ class Fx2(Fx):
         return self.generate_optimal(l)
 
     def generate_population(self, n, l, p_m, is_crossover):
-        return PopulationFactory(self).generate_population_fx2(n, l, p_m, is_crossover)
+        return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self, ch: Chromosome):
         return ((self.b ** 2 - ch.fitness) <= DELTA) and (decode(ch.code, self.a, self.b, len(ch.code), self.is_binary) - self.b) <= SIGMA
@@ -111,7 +111,7 @@ class F512subx2:
         return Chromosome(code, math.pow(5.12, 2) - math.pow(decode(code, -5.12, 5.11, len(code), self.is_binary), 2))
 
     def generate_population(self, n, l, p_m, is_crossover):
-        return PopulationFactory(self).generate_population_f512(n, l, p_m, is_crossover)
+        return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self,ch: Chromosome):
         return (abs(math.pow(5.12, 2) - ch.fitness) <= DELTA) and abs(decode(ch.code, -5.12, 5.11, len(ch.code), self.is_binary)) <= SIGMA
@@ -142,7 +142,7 @@ class Fecx:
         return Chromosome(gray_code, math.pow(math.e, x * self.c))
 
     def generate_population(self, n, l, p_m, is_crossover):
-        return PopulationFactory(self).generate_population_fecx(n, l, p_m, self.c, is_crossover)
+        return PopulationFactory(self).generate_population_fecx(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self, ch: Chromosome):
         return (abs(math.pow(math.e, 10.23 * self.c) - ch.fitness) <= DELTA) and abs(decode(ch.code, 0, 10.23, len(ch.code), self.is_binary) - 10.23) <= SIGMA

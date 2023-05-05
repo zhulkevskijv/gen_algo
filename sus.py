@@ -26,9 +26,10 @@ def basic_sus(population: Population, total_fitness, fitness_scale:[]):
     return mating_pool
 
 
+
 class SUS:
     @staticmethod
-    def select(population: Population):
+    def sus(population: Population):
         total_fitness = 0
         fitness_scale = []
 
@@ -43,6 +44,12 @@ class SUS:
         population.update_chromosomes(mating_pool)
 
         return population
+
+    def select(self, population):
+        return self.sus(population)
+
+    def get_name(self):
+        return self.__class__.__name__
 
 
 # class DisruptiveSUS:

@@ -1,4 +1,3 @@
-from constants import N
 import xlsxwriter
 import math
 import os
@@ -27,7 +26,7 @@ def save_to_excel_internal(sheet, dictionary, col_num = 1, row_num = 2, print_ke
     return col_num
 
 
-def save_to_excel(runs_dictionary, selection_func_name):
+def save_to_excel(runs_dictionary, selection_func_name, N):
     path = 'stats/' + selection_func_name + '/' + str(N)
 
     if not os.path.exists(path):
@@ -123,38 +122,38 @@ def save_noise_to_excel(runs_dictionary, selection_func_name):
     workbook.close()
 
 
-def save_avg_to_excel(func_runs_dictionary, noise_runs_dictionary):
-    path = 'stats/AVG/' + str(N)
-    if not os.path.exists(path):
-        os.makedirs(path)
-    workbook = xlsxwriter.Workbook(path + '/data.xlsx')
-    worksheet = workbook.add_worksheet()
-    worksheet.name = str(N)
-    merge_format = workbook.add_format({
-        'bold': 1,
-        'border': 1,
-        'align': 'center',
-        'fg_color': 'yellow'})
-    row = 1
-    for fitness_func, runs_dictionary in func_runs_dictionary.items():
-        func_num = 1
-        for func_name, runs_stats in runs_dictionary.items():
-            worksheet.write(row + 1, 0, func_name)
-            last_col_num = save_to_excel_internal(worksheet, runs_stats.as_dict(), 1, row + 1, func_num == 1)
-            if func_num == 1:
-                worksheet.merge_range(row-1, 1, row-1, last_col_num - 1, fitness_func, merge_format)
-            func_num = func_num + 1
-            row = row + 1
-        row = row + 3
-    for fitness_func, runs_dictionary in noise_runs_dictionary.items():
-        func_num = 1
-        for func_name, runs_stats in runs_dictionary.items():
-            worksheet.write(row + 1, 0, func_name)
-            last_col_num = save_to_excel_internal(worksheet, runs_stats.as_noise_dict(), 1, row + 1, func_num == 1)
-            if func_num == 1:
-                worksheet.merge_range(row-1, 1, row-1, last_col_num - 1, fitness_func, merge_format)
-            func_num = func_num + 1
-            row = row + 1
-        row = row + 3
-    workbook.close()
+# def save_avg_to_excel(func_runs_dictionary, noise_runs_dictionary):
+#     path = 'stats/AVG/' + str(N)
+#     if not os.path.exists(path):
+#         os.makedirs(path)
+#     workbook = xlsxwriter.Workbook(path + '/data.xlsx')
+#     worksheet = workbook.add_worksheet()
+#     worksheet.name = str(N)
+#     merge_format = workbook.add_format({
+#         'bold': 1,
+#         'border': 1,
+#         'align': 'center',
+#         'fg_color': 'yellow'})
+#     row = 1
+#     for fitness_func, runs_dictionary in func_runs_dictionary.items():
+#         func_num = 1
+#         for func_name, runs_stats in runs_dictionary.items():
+#             worksheet.write(row + 1, 0, func_name)
+#             last_col_num = save_to_excel_internal(worksheet, runs_stats.as_dict(), 1, row + 1, func_num == 1)
+#             if func_num == 1:
+#                 worksheet.merge_range(row-1, 1, row-1, last_col_num - 1, fitness_func, merge_format)
+#             func_num = func_num + 1
+#             row = row + 1
+#         row = row + 3
+#     for fitness_func, runs_dictionary in noise_runs_dictionary.items():
+#         func_num = 1
+#         for func_name, runs_stats in runs_dictionary.items():
+#             worksheet.write(row + 1, 0, func_name)
+#             last_col_num = save_to_excel_internal(worksheet, runs_stats.as_noise_dict(), 1, row + 1, func_num == 1)
+#             if func_num == 1:
+#                 worksheet.merge_range(row-1, 1, row-1, last_col_num - 1, fitness_func, merge_format)
+#             func_num = func_num + 1
+#             row = row + 1
+#         row = row + 3
+#     workbook.close()
 #%%
