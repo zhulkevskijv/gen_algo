@@ -113,7 +113,7 @@ class PopulationAlt:
     def estimate_convergence(self, avg_fitness_list=None, ff_name=None):
         if self.p_m == 0:
             # print(self.genotypes_list)
-            return all_equal(self.genotypes_list)
+            return (self.genotypes_list == self.genotypes_list[0]).all()
         else:
             if 'FConstALL' in ff_name:
                 # homogeneity
@@ -151,7 +151,7 @@ class PopulationAlt:
             indeces = np.random.choice(N //2, N // 2, replace=False)
             for index in indeces:
                 crossover_point = np.random.choice(N-2, 1)[0]
-                self.genotypes_list[index], self.genotypes_list[N-1-index] = np.concatenate((self.genotypes_list[index][0:crossover_point+1], self.genotypes_list[N-1-index][crossover_point+1: N]), axis=0), np.concatenate((self.genotypes_list[N-1-index][0:crossover_point+1],  self.chromosomes[index][crossover_point+1: N]), axis=0)
+                self.genotypes_list[index], self.genotypes_list[N-1-index] = np.concatenate((self.genotypes_list[index][0:crossover_point+1], self.genotypes_list[N-1-index][crossover_point+1: N]), axis=0), np.concatenate((self.genotypes_list[N-1-index][0:crossover_point+1],  self.genotypes_list[index][crossover_point+1: N]), axis=0)
             self.update(fitness_function)
 
     def get_mean_fitness(self):
@@ -161,7 +161,7 @@ class PopulationAlt:
         return max(self.fitness_list)
 
     def get_optim_num(self):
-        optim_list = list(filter(lambda x: np.array_equal(x, self.optimal_chromosome.code), self.genotypes_list))
+        optim_list = list(filter(lambda x: np.array_equal(x, self.optimal_chromosome), self.genotypes_list))
         return len(optim_list)
 
     def get_best_genotype(self):
@@ -178,10 +178,10 @@ class PopulationAlt:
         return self.keys
 
     def get_chromosomes_copies_count(self, chromosome_genotype):
-        return self.genotypes_list.count(chromosome_genotype)
+        return int(np.all(self.genotypes_list == chromosome_genotype, axis=1).sum())
 
     def update(self, fitness_func):
-        self.fitness_list = [fitness_func.estimate(chromosome) for chromosome in self.genotypes_list]
+        self.fitness_list = np.array([fitness_func.estimate(chromosome) for chromosome in self.genotypes_list])
 
     def update_rws(self, probabilities, fitness_func):
         self.keys = np.random.choice(len(self.genotypes_list), len(self.genotypes_list), p=probabilities)

@@ -14,7 +14,7 @@ class RWSAlt:
         if population_fitness == 0:
             return population
 
-        probabilities = [fitness/population_fitness for fitness in population.fitness_list]
+        probabilities = population.fitness_list / population_fitness
         population.update_rws(probabilities, fitness_func)
 
         return population
@@ -87,7 +87,7 @@ class WindowRWSAlt:
         self.fh_worst_list = deque()
         self.h = h
 
-    def window_rws(self, population):
+    def window_rws(self, population, fitness_func):
         population_fitness = sum(population.fitness_list)
 
         if population_fitness == 0:
@@ -109,12 +109,12 @@ class WindowRWSAlt:
             population_fitness = sum(population.fitness_list)
             probabilities = population.fitness_list / population_fitness
 
-        population.update_rws(probabilities)
+        population.update_rws(probabilities, fitness_func)
 
         return population
 
-    def select(self, population):
-        return self.window_rws(population)
+    def select(self, population, fitness_func):
+        return self.window_rws(population, fitness_func)
 
     def get_name(self):
         return self.__class__.__name__+str(self.h)
@@ -123,7 +123,7 @@ class PowerLawRWSAlt:
     def __init__(self, k: float):
         self.k = k
 
-    def power_law_rws(self, population: Population):
+    def power_law_rws(self, population: Population, fitness_func):
         population_fitness = sum(population.fitness_list)
 
         if population_fitness == 0:
@@ -137,12 +137,12 @@ class PowerLawRWSAlt:
             probabilities = scaled_fitness / sf_sum
         else:
             probabilities = population.fitness_list / population_fitness
-        population.update_rws(probabilities)
+        population.update_rws(probabilities, fitness_func)
 
         return population
 
-    def select(self, population):
-        return self.power_law_rws(population)
+    def select(self, population, fitness_func):
+        return self.power_law_rws(population, fitness_func)
 
     def get_name(self):
         return self.__class__.__name__+str(self.k)

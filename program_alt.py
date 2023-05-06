@@ -50,7 +50,7 @@ def main(fitness_function, selection_functions: [], file_name, *args):
                 runs_dict[selection_function.get_name() + '_mut_cross'] = RunsStats()
 
     for i in tqdm(range(0, MAX_RUNS)):
-        p = fitness_function.generate_population(*args, 0, True)
+        p = fitness_function.generate_population_alt(*args, 0, True)
 
         for selection_function in selection_functions:
             for l in range(4):

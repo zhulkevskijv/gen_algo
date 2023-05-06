@@ -19,7 +19,7 @@ class EvoAlgorithmAlt:
         self.selection_diff_stats = SelectionDiffStats()
         self.noise_stats = NoiseStats()
         self.best = self.population.genotypes_list[0]
-        self.pressure_stats.num_of_best.append(self.population.genotypes_list.count(self.best))
+        self.pressure_stats.num_of_best.append(self.population.get_chromosomes_copies_count(self.best))
         self.pressure_stats.f_best.append(self.population.get_max_fitness())
         self.fitness_function = fitness_function
         self.optimal = optimal
@@ -43,7 +43,7 @@ class EvoAlgorithmAlt:
             keys_before_selection = self.population.get_keys_list()
             # best_genotype = self.population.genotypes_list[0] if run < 1 else self.population.get_best_genotype()
             f = avg_fitness_list[self.iteration]
-            self.population = self.selection_function.select(self.population)
+            self.population = self.selection_function.select(self.population, self.fitness_function)
             keys_after_selection = self.population.get_keys_list()
             not_selected_chromosomes = set(keys_before_selection) - set(keys_after_selection)
             self.population.mutate(self.fitness_function)
@@ -59,7 +59,7 @@ class EvoAlgorithmAlt:
             self.selection_diff_stats.s_list.append(fs - f)
             best_genotype = self.population.genotypes_list[0] if run < 1 else self.population.get_best_genotype()
             num_of_best = self.population.get_chromosomes_copies_count(best_genotype)
-            self.reproduction_stats.rr_list.append(1 - (len(not_selected_chromosomes) / len(self.population.chromosomes)))
+            self.reproduction_stats.rr_list.append(1 - (len(not_selected_chromosomes) / len(self.population.genotypes_list)))
             # self.reproduction_stats.best_rr_list.append(num_of_best / len(self.population.chromosomes))
             self.pressure_stats.intensities.append(PressureStats.calculate_intensity(fs, f, f_std))
             self.pressure_stats.f_best.append(self.population.get_max_fitness())
@@ -69,7 +69,7 @@ class EvoAlgorithmAlt:
                                                                                self.pressure_stats.num_of_best[self.iteration-1],
                                                                                self.pressure_stats.f_best[self.iteration],
                                                                                self.pressure_stats.f_best[self.iteration-1]))
-            if num_of_best >= len(self.population.chromosomes) / 2 and self.pressure_stats.grl is None:
+            if num_of_best >= len(self.population.genotypes_list) / 2 and self.pressure_stats.grl is None:
                 self.pressure_stats.grli = self.iteration
                 self.pressure_stats.grl = self.pressure_stats.grs[-1]
             convergent = self.population.estimate_convergence(avg_fitness_list, self.fitness_function.__class__.__name__)

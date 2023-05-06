@@ -2,6 +2,7 @@ import numpy as np
 from chromosome import Chromosome
 from constants import DELTA, SIGMA
 from population_factory import PopulationFactory
+from population_factory_alt import PopulationFactoryAlt
 from coding import *
 
 class FConstALL:
@@ -23,6 +24,9 @@ class FConstALL:
 
     def generate_population(self, n, l, p_m, is_crossover):
         return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
+
+    def generate_population_alt(self, n, l, p_m, is_crossover):
+        return PopulationFactoryAlt(self).generate_population(n, l, p_m, is_crossover)
 
 
 class FHD:
@@ -48,6 +52,9 @@ class FHD:
 
     def generate_population(self, n, l, p_m, is_crossover):
         return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
+
+    def generate_population_alt(self, n, l, p_m, is_crossover):
+        return PopulationFactoryAlt(self).generate_population(n, l, p_m, is_crossover)
 
 
 class Fx:
@@ -84,6 +91,9 @@ class Fx:
     def generate_population(self, n, l, p_m, is_crossover):
         return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
 
+    def generate_population_alt(self, n, l, p_m, is_crossover):
+        return PopulationFactoryAlt(self).generate_population(n, l, p_m, is_crossover)
+
     def check_chromosome_success(self, ch: Chromosome):
         return ((self.b - ch.fitness) <= DELTA) and (decode(ch.code, self.a, self.b, len(ch.code), self.is_binary) - self.b) <= SIGMA
 
@@ -112,6 +122,9 @@ class Fx2(Fx):
 
     def generate_population(self, n, l, p_m, is_crossover):
         return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
+
+    def generate_population_alt(self, n, l, p_m, is_crossover):
+        return PopulationFactoryAlt(self).generate_population(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self, ch: Chromosome):
         return ((self.b ** 2 - ch.fitness) <= DELTA) and (decode(ch.code, self.a, self.b, len(ch.code), self.is_binary) - self.b) <= SIGMA
@@ -152,6 +165,9 @@ class F512subx2:
 
     def generate_population(self, n, l, p_m, is_crossover):
         return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
+
+    def generate_population_alt(self, n, l, p_m, is_crossover):
+        return PopulationFactoryAlt(self).generate_population(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self,ch: Chromosome):
         return (abs(math.pow(5.12, 2) - ch.fitness) <= DELTA) and abs(decode(ch.code, -5.12, 5.11, len(ch.code), self.is_binary)) <= SIGMA
@@ -200,6 +216,9 @@ class Fecx:
 
     def generate_population(self, n, l, p_m, is_crossover):
         return PopulationFactory(self).generate_population(n, l, p_m, is_crossover)
+
+    def generate_population_alt(self, n, l, p_m, is_crossover):
+        return PopulationFactoryAlt(self).generate_population(n, l, p_m, is_crossover)
 
     def check_chromosome_success(self, ch: Chromosome):
         return (abs(math.pow(math.e, 10.23 * self.c) - ch.fitness) <= DELTA) and abs(decode(ch.code, 0, 10.23, len(ch.code), self.is_binary) - 10.23) <= SIGMA

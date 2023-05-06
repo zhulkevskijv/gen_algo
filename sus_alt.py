@@ -134,10 +134,10 @@ class WindowSUSAlt:
                 else:
                     fitness_scale.append(fitness + fitness_scale[index - 1])
             mating_pool = basic_sus(population, total_fitness, fitness_scale)
-            population.update_chromosomes(mating_pool, fitness_func)
+            population.update_chromosomes_with_keys(mating_pool, fitness_func)
         else:
             mating_pool = basic_sus(population, total_fitness, fitness_scale)
-            population.update_chromosomes(mating_pool)
+            population.update_chromosomes_with_keys(mating_pool, fitness_func)
 
         return population
 
@@ -163,7 +163,7 @@ class PowerLawSUSAlt:
                 fitness_scale.append(individual_scaled_fitness + fitness_scale[index - 1])
         # print(total_fitness)
         mating_pool = basic_sus(population, total_fitness, fitness_scale)
-        population.update_chromosomes(mating_pool, fitness_func)
+        population.update_chromosomes_with_keys(mating_pool, fitness_func)
 
         return population
 
