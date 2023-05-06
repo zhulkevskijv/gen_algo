@@ -1,7 +1,7 @@
 from constants import MAX_RUNS
 from runs_stats import RunsStats
-from evoalgorithm import EvoAlgorithm
-from population import Population
+from evoalgorithm_alt import EvoAlgorithmAlt
+from population_alt import PopulationAlt
 from excel import save_to_excel
 from plots import *
 import time
@@ -67,14 +67,14 @@ def main(fitness_function, selection_functions: [], file_name, *args):
 
                 sf = selection_function
 
-                optimal = fitness_function.generate_optimal(args[0])
+                optimal = fitness_function.generate_optimal_alt(args[0])[0]
                 folder_name = file_name if file_name is not None else ff_name
                 mutation_p = 0
                 if l == 1 or l == 3:
                     mutation_p = mut_p_dict[L][N]
                 # (0.00001 if ff_name == 'FConstALL' or ff_name == 'FHD' else 0.0001) if l == 1 or l == 3 else 0
                 # print('before run')
-                current_run = EvoAlgorithm(Population(p.chromosomes.copy(), mutation_p, is_crossover=l == 2 or l ==3), sf, fitness_function, optimal, sf_name).run(i, folder_name, iter_to_plot)
+                current_run = EvoAlgorithmAlt(PopulationAlt(p.genotypes_list.copy(),p.fitness_list.copy(), mutation_p, is_crossover=l == 2 or l ==3), sf, fitness_function, optimal, sf_name).run(i, folder_name, iter_to_plot)
                 # print('before save')
                 if i < runs_to_plot:
                     save_run_plots(folder_name, sf_name, current_run, i, N)

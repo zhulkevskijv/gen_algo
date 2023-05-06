@@ -1,22 +1,26 @@
+from collections import deque
+
 from population import Population
+from statistics import mean
+from constants import G
 import math
 
 
-class RWS:
+class RWSAlt:
     @staticmethod
-    def rws(population):
+    def rws(population, fitness_func):
         population_fitness = sum(population.fitness_list)
 
         if population_fitness == 0:
             return population
 
-        probabilities = [chromosome.fitness/population_fitness for chromosome in population.chromosomes]
-        population.update_rws(probabilities)
+        probabilities = [fitness/population_fitness for fitness in population.fitness_list]
+        population.update_rws(probabilities, fitness_func)
 
         return population
 
-    def select(self, population):
-        return self.rws(population)
+    def select(self, population, fitness_func):
+        return self.rws(population,fitness_func)
 
     def get_name(self):
         return self.__class__.__name__
@@ -78,36 +82,32 @@ class RWS:
 #         return population
 
 
-class WindowRWS:
+class WindowRWSAlt:
     def __init__(self, h: int):
-        self.fh_worst_list = []
+        self.fh_worst_list = deque()
         self.h = h
 
-    def window_rws(self, population: Population):
+    def window_rws(self, population):
         population_fitness = sum(population.fitness_list)
 
         if population_fitness == 0:
             return population
 
-        if len(self.fh_worst_list) < self.h:
-            self.fh_worst_list.append(min(population.fitness_list))
-        else:
-            self.fh_worst_list[1] = min(population.fitness_list)
+        if len(self.fh_worst_list) > self.h:
+            self.fh_worst_list.popleft()
+        self.fh_worst_list.append(min(population.fitness_list))
 
         fh_worst = min(self.fh_worst_list)
-        scaled_fitness = []
 
-        for chromosome in population.chromosomes:
-            scaled_value = chromosome.fitness - fh_worst
-            scaled_fitness.append(scaled_value)
+        scaled_fitness = population.fitness_list - fh_worst
 
         sf_sum = sum(scaled_fitness)
 
         if sf_sum > 0:
-            probabilities = [sf/sf_sum for sf in scaled_fitness]
+            probabilities = scaled_fitness / sf_sum
         else:
             population_fitness = sum(population.fitness_list)
-            probabilities = [chromosome.fitness/population_fitness for chromosome in population.chromosomes]
+            probabilities = population.fitness_list / population_fitness
 
         population.update_rws(probabilities)
 
@@ -119,7 +119,7 @@ class WindowRWS:
     def get_name(self):
         return self.__class__.__name__+str(self.h)
 
-class PowerLawRWS:
+class PowerLawRWSAlt:
     def __init__(self, k: float):
         self.k = k
 
@@ -129,17 +129,14 @@ class PowerLawRWS:
         if population_fitness == 0:
             return population
 
-        scaled_fitness = []
-
-        for chromosome in population.chromosomes:
-            scaled_value = math.pow(chromosome.fitness , self.k)
-            scaled_fitness.append(scaled_value)
+        scaled_fitness = population.fitness_list ** self.k
 
         sf_sum = sum(scaled_fitness)
+
         if sf_sum > 0:
-            probabilities = [sf/sf_sum for sf in scaled_fitness]
+            probabilities = scaled_fitness / sf_sum
         else:
-            probabilities = [chromosome.fitness/population_fitness for chromosome in population.chromosomes]
+            probabilities = population.fitness_list / population_fitness
         population.update_rws(probabilities)
 
         return population
