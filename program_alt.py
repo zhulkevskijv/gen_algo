@@ -67,7 +67,7 @@ def main(fitness_function, selection_functions: [], file_name, *args):
 
                 sf = selection_function
 
-                optimal = fitness_function.generate_optimal_alt(args[0])[0]
+                optimal = fitness_function.generate_optimal_alt(args[1])[0]
                 folder_name = file_name if file_name is not None else ff_name
                 mutation_p = 0
                 if l == 1 or l == 3:

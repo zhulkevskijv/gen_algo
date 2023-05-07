@@ -57,7 +57,7 @@ class EvoAlgorithmAlt:
             best_fitness_list.append(best_fs)
             optim_num_list.append(optim_num)
             self.selection_diff_stats.s_list.append(fs - f)
-            best_genotype = self.population.genotypes_list[0] if run < 1 else self.population.get_best_genotype()
+            best_genotype = self.population.get_best_genotype()
             num_of_best = self.population.get_chromosomes_copies_count(best_genotype)
             self.reproduction_stats.rr_list.append(1 - (len(not_selected_chromosomes) / len(self.population.genotypes_list)))
             # self.reproduction_stats.best_rr_list.append(num_of_best / len(self.population.chromosomes))
