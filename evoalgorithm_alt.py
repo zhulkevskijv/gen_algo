@@ -95,7 +95,9 @@ class EvoAlgorithmAlt:
 
     def check_success(self):
         ff_name = self.fitness_function.__class__.__name__
-        if ff_name == 'FH' or ff_name == 'FHD' or ff_name == 'FConstALL':
+        if ff_name == 'FConstALL':
+            return True
+        elif ff_name == 'FH' or ff_name == 'FHD':
             if self.population.p_m == 0:
                 return self.population.get_chromosomes_copies_count(list(self.optimal)) == len(self.population.genotypes_list)
             else:
